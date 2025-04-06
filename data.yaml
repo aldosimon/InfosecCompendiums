@@ -1,8 +1,3 @@
-This is an example of how your data.yaml file should be structured. You need to create this file yourself by combining the content of your individual YAML files into one list like this. Place it in the same directory as index.html.# data.yaml
-# Combine all your items into this single list.
-# Each item is represented by a map (key-value pairs).
-# Ensure keys match the table headers: subject, predicate, object, name, url, description, function
-
 - subject: software
   predicate: attack
   object: endpoint
