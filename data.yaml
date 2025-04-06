@@ -1,39 +1,467 @@
-- subject: software
-  predicate: attack
-  object: endpoint
-  name: Metasploit Framework
-  url: https://www.metasploit.com/
-  description: A popular penetration testing framework for vulnerability assessment and exploitation.
+This file contains the data loaded by the website. It follows the required schema, with the 'subject' and 'object' fields swapped as requested.# data.yaml
+# List of items to display in the table.
+# Schema: subject, predicate, object, name, url, description, function
+# NOTE: 'subject' now contains the original 'Type', and 'object' contains the original 'Subject'.
+
+- subject: framework # Value previously under object
+  predicate: explain, standard
+  object: event, incident # Value previously under subject
+  name: Open Cybersecurity Schema Framework
+  url: https://github.com/ocsf
+  description: The Open Cybersecurity Schema Framework is an open-source project, delivering an extensible framework for developing schemas, along with a vendor-agnostic core security schema
   function: identify
-
-- subject: technique
-  predicate: gain access
-  object: network credential
-  name: Phishing
-  url: https://attack.mitre.org/techniques/T1566/
-  description: Attempting to acquire sensitive information by masquerading as a trustworthy entity in electronic communication.
-  function: protect
-
-- subject: tool
+- subject: framework # Value previously under object
+  predicate: explain, standard
+  object: event, incident # Value previously under subject
+  name: veris framework
+  url: https://verisframework.org/index.html
+  description: The Vocabulary for Event Recording and Incident Sharing (VERIS) is a set of metrics designed to provide a common language for describing security incidents in a structured and repeatable manner
+  function: identify
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate, detonate
+  object: cloud TTP # Value previously under subject
+  name: Grimoire
+  url: https://github.com/DataDog/grimoire
+  description: Grimoire is a "REPL for detection engineering" that allows you to generate datasets of cloud audit logs for common attack techniques. It currently supports AWS.
+  function: detect, protect
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate, detonate
+  object: cloud TTP # Value previously under subject
+  name: Stratus Red Team
+  url: https://stratus-red-team.cloud/
+  description: '' # Empty description
+  function: detect, protect
+- subject: tool # Value previously under object
   predicate: scan
-  object: network vulnerability
-  name: Nmap
-  url: https://nmap.org/
-  description: Free and open source utility for network discovery and security auditing.
-  function: identify
-
-- subject: service
-  predicate: detect
-  object: intrusion
-  name: Snort
-  url: https://www.snort.org/
-  description: An open source network intrusion prevention and detection system (IPS/IDS).
+  object: PII # Value previously under subject
+  name: Hawk Eye
+  url: https://github.com/rohitcoder/hawk-eye?tab=readme-ov-file
+  description: Hawk Eye is a robust, command-line tool built to safeguard against data breaches and cyber threats. Much like the sharp vision of a hawk, it quickly scans multiple data sources—S3, MySQL, PostgreSQL, MongoDB, CouchDB, Google Drive, Slack, Redis, Firebase, file systems, and Google Cloud buckets (GCS)—for Personally Identifiable Information (PII) and secrets
+  function: detect, protect
+- subject: list # Value previously under object
+  predicate: aggregate, explain
+  object: Microsoft Entra # Value previously under subject
+  name: Microsoft Entra ID - Attack and Defense Playbook
+  url: https://github.com/Cloud-Architekt/AzureAD-Attack-Defense/tree/main
+  description: This publication is a collection of various common attack scenarios on Microsoft Entra and how they can be mitigated or detected.
+  function: detect, protect
+- subject: cheat sheet, list # Value previously under object
+  predicate: aggregate, explain
+  object: TTP, cloud TTP # Value previously under subject
+  name: datadog cloud security atlas
+  url: https://securitylabs.datadoghq.com/cloud-security-atlas/
+  description: Datadog Cloud Security Atlas is a risk register for Threats and Vulnerabilities. This database gives you the ability to search and filter on your cloud provider platform, risk type, and sort by impact, exploitability, and recency.
+  function: detect, protect
+- subject: article, framework # Value previously under object
+  predicate: explain, standard
+  object: threat hunting # Value previously under subject
+  name: Tahiti
+  url: https://github.com/threat-hunting/awesome_Threat-Hunting/blob/master/Threat%20Intelligence/Files/TaHiTI-Threat-Hunting-Methodology-whitepaper-THLink.pdf
+  description: Tahiti is a threat hunting methodology employing TI
   function: detect
-
-- subject: control
-  predicate: enforce
-  object: access policy
-  name: Multi-Factor Authentication (MFA)
-  url: https://www.nist.gov/itl/applied-cybersecurity/multi-factor-authentication
-  description: A security measure requiring two or more verification methods to grant access.
-  function: protect
+- subject: tool # Value previously under object
+  predicate: aggregate, explain
+  object: cloudtrail # Value previously under subject
+  name: trail discover
+  url: https://traildiscover.cloud/
+  description: An evolving repository of CloudTrail events with detailed descriptions, MITRE ATT&CK insights, real-world incidents references, other research references and security implications.
+  function: detect
+- subject: tool # Value previously under object
+  predicate: aggregate, explain
+  object: AWS, IAM, identity # Value previously under subject
+  name: IAMSpy
+  url: https://github.com/WithSecureLabs/IAMSpy
+  description: This is the repository containing IAMSpy, a library that utilises the Z3 prover to attempt to answer questions about AWS IAM. It can "load" a variety of IAM policies and convert them to generate Z3 constraints and a model, from which queries can be made on identifying whether actions are allowed or not.
+  function: identify, protect
+- subject: tool # Value previously under object
+  predicate: aggregate, scan
+  object: IAM, asset, entra # Value previously under subject
+  name: EntraOps
+  url: https://www.cloud-architekt.net/entraops/
+  description: Community project to classify, identify and protect your privileges based on Enterprise Access Model
+  function: identify, protect
+- subject: article, list # Value previously under object
+  predicate: explain
+  object: incident response # Value previously under subject
+  name: MS IR hub
+  url: https://aka.ms/MicrosoftIRNinjaHub
+  description: Microsoft hub for Incident Response knowledge base
+  function: detect, respond
+- subject: tool # Value previously under object
+  predicate: process
+  object: windows event # Value previously under subject
+  name: chainsaw
+  url: https://github.com/WithSecureLabs/chainsaw
+  description: '' # Empty description
+  function: detect
+- subject: tool # Value previously under object
+  predicate: process
+  object: windows event # Value previously under subject
+  name: deepblue CLI
+  url: https://github.com/sans-blue-team/DeepBlueCLI
+  description: '' # Empty description
+  function: detect
+- subject: tool # Value previously under object
+  predicate: process
+  object: common log, windows event # Value previously under subject
+  name: logparser studio
+  url: https://techcommunity.microsoft.com/t5/exchange-team-blog/log-parser-studio-2-0-is-now-available/ba-p/593266
+  description: '' # Empty description
+  function: detect
+- subject: tool # Value previously under object
+  predicate: process
+  object: endpoint # Value previously under subject
+  name: velociraptor
+  url: https://github.com/Velocidex/velociraptor
+  description: '' # Empty description
+  function: detect, respond
+- subject: tool # Value previously under object
+  predicate: process
+  object: endpoint # Value previously under subject
+  name: osquery
+  url: https://osquery.io/
+  description: '' # Empty description
+  function: detect
+- subject: tool # Value previously under object
+  predicate: process
+  object: IOC # Value previously under subject
+  name: loki
+  url: https://github.com/Neo23x0/Loki
+  description: '' # Empty description
+  function: detect
+- subject: tool # Value previously under object
+  predicate: process
+  object: files, windows # Value previously under subject
+  name: KAPE
+  url: https://www.kroll.com/en/services/cyber-risk/incident-response-litigation-support/kroll-artifact-parser-extractor-kape
+  description: '' # Empty description
+  function: detect, respond
+- subject: tool # Value previously under object
+  predicate: process
+  object: files, image files # Value previously under subject
+  name: autopsy
+  url: http://www.sleuthkit.org/
+  description: '' # Empty description
+  function: detect
+- subject: list # Value previously under object
+  predicate: explain
+  object: windows event # Value previously under subject
+  name: awesome-eventid
+  url: https://github.com/stuhli/awesome-event-ids
+  description: github event id awesome list
+  function: detect
+- subject: framework # Value previously under object
+  predicate: compare
+  object: windows event # Value previously under subject
+  name: mitre to evtx
+  url: https://github.com/mdecrevoisier/EVTX-to-MITRE-Attack
+  description: MITRE mapping to event id
+  function: detect
+- subject: cheat sheet # Value previously under object
+  predicate: explain
+  object: linux logs, log files # Value previously under subject
+  name: lenny z log cheatsheet
+  url: https://zeltser.com/media/docs/security-incident-log-review-checklist.pdf
+  description: IR critical log review cheatsheet
+  function: detect
+- subject: cheat sheet # Value previously under object
+  predicate: explain
+  object: DFIR # Value previously under subject
+  name: lenny z incident cheatsheet
+  url: https://zeltser.com/media/docs/security-incident-survey-cheat-sheet.pdf
+  description: Security incident cheat sheet for server administrators
+  function: detect
+- subject: cheat sheet # Value previously under object
+  predicate: explain
+  object: DFIR, files # Value previously under subject
+  name: SANS intrusion discovery cheat sheet for windows
+  url: https://www.sans.org/posters/intrusion-discovery-cheat-sheet-for-windows/
+  description: System Administrators are often on the front lines of computer security. This guide aims to support System Administrators in finding indications of a system compromise.
+  function: detect
+- subject: cheat sheet # Value previously under object
+  predicate: explain
+  object: office documents # Value previously under subject
+  name: lenny z malicious docs cheatsheet
+  url: https://zeltser.com/analyzing-malicious-documents/
+  description: lenny z how to analyze malicious documents
+  function: detect
+- subject: add on # Value previously under object
+  predicate: explain
+  object: KQL # Value previously under subject
+  name: sentinel dcsecops hunting query
+  url: https://danielchronlund.com/2022/10/03/sentinel-hunting-query-pack-dcsecurityoperations/
+  description: dcsecops hunting query in sentinel
+  function: detect
+- subject: tool # Value previously under object
+  predicate: process
+  object: endpoint # Value previously under subject
+  name: lima charlie
+  url: https://limacharlie.io/
+  description: Limacharlie provide endpoint security, an observability pipeline, detection and response rules, or other underlying security capabilities.
+  function: detect, respond
+- subject: framework # Value previously under object
+  predicate: explain
+  object: detection # Value previously under subject
+  name: detection engineering maturity matrix
+  url: https://detectionengineering.io/
+  description: This matrix aims to help the community better measure the capabilities and maturity of their detection function and provide a high-level roadmap for organizations looking to either build a team or expand an existing one
+  function: govern
+- subject: framework # Value previously under object
+  predicate: compare, explain
+  object: EDR # Value previously under subject
+  name: EDR telemetry matrix
+  url: https://github.com/tsale/EDR-Telemetry?tab=readme-ov-file
+  description: This repo provides a list of telemetry features from EDR products and other endpoint agents
+  function: govern
+- subject: article # Value previously under object
+  predicate: explain
+  object: threat modelling # Value previously under subject
+  name: threat modelling - the short version
+  url: https://medium.com/dark-roast-security/threat-modeling-the-short-version-5b70ba96cea8
+  description: Threat Modeling is the structured practice of identifying and prioritizing potential threats and vulnerabilities, and the prioritization of mitigations to protect assets, including confidential data and intellectual property.
+  function: govern, protect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: IOC, hash # Value previously under subject
+  name: filescan
+  url: https://www.filescan.io/scan
+  description: Uncover Hidden Threats: Insightful Analysis Powered by Your Data
+  function: detect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: CVE, IOC, IP address, domain, hash # Value previously under subject
+  name: metadefender
+  url: https://metadefender.opswat.com/
+  description: '' # Empty description
+  function: detect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: IOC, IP address, domain # Value previously under subject
+  name: URL void reputation checker
+  url: https://www.urlvoid.com/
+  description: This service helps you detect potentially malicious websites.
+  function: detect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: IOC, IP address, domain, files, hash # Value previously under subject
+  name: Talos Intelligence Reputation Checker # Corrected Name
+  url: https://talosintelligence.com/
+  description: cisco reputation checker for various type of inputs
+  function: detect
+- subject: tool # Value previously under object
+  predicate: sandbox, scan
+  object: IOC, IP address, URL, domain # Value previously under subject
+  name: urlscan.io
+  url: https://urlscan.io/
+  description: sandbox to run URL
+  function: detect
+- subject: tool # Value previously under object
+  predicate: sandbox
+  object: IOC, IP address, URL, domain # Value previously under subject
+  name: browserling
+  url: https://browserling.com # Added scheme
+  description: sandbox to run URL via virtual browser
+  function: detect
+- subject: tool # Value previously under object
+  predicate: sandbox
+  object: IOC, IP address, URL, domain # Value previously under subject
+  name: kasm workspace
+  url: https://www.kasmweb.com/
+  description: sandbox to run URL via virtual desktop
+  function: detect
+- subject: tool # Value previously under object
+  predicate: sandbox
+  object: IOC, IP address, URL, domain, files # Value previously under subject
+  name: hybrid analysis
+  url: https://www.hybrid-analysis.com/
+  description: sandbox to run URL, files via proprietary dynamic and static analysis
+  function: detect
+- subject: tool # Value previously under object
+  predicate: sandbox
+  object: IOC, IP address, URL, domain, files # Value previously under subject
+  name: any run
+  url: https://any.run/
+  description: sandbox to run URL, files via virtual desktop for dynamic analysis
+  function: detect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: IP address, URL, domain # Value previously under subject
+  name: phish tank
+  url: https://phishtank.org/
+  description: scanner check URL/ ip address against phish databases
+  function: detect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: IP address, URL, domain, email, files, hash, user agent # Value previously under subject
+  name: threat miner
+  url: https://www.threatminer.org/
+  description: scanner check various object against proprietary databases
+  function: detect
+- subject: tool # Value previously under object
+  predicate: explain
+  object: malware # Value previously under subject
+  name: oh my malware
+  url: https://ohmymalware.com/
+  description: very complete video tutorials on analyzing various malware
+  function: detect
+- subject: tool # Value previously under object
+  predicate: explain
+  object: exploit, reverse engineer # Value previously under subject
+  name: Exploit Reversing # Corrected Name
+  url: https://exploitreversing.com/
+  description: tutorials on reversing
+  function: detect
+- subject: tool # Value previously under object
+  predicate: explain
+  object: network traffic # Value previously under subject
+  name: malware-traffic-analysis
+  url: https://www.malware-traffic-analysis.net/
+  description: tutorials on analyzing network traffic originated from malware infection
+  function: detect
+- subject: cheat sheet # Value previously under object
+  predicate: explain
+  object: DFIR # Value previously under subject
+  name: jaiminton’s DFIR cheatsheet
+  url: https://www.jaiminton.com/cheatsheet/DFIR/#
+  description: cheat sheet on various DFIR topics, mainly covers classic endpoints
+  function: detect, respond
+- subject: cheat sheet, list # Value previously under object
+  predicate: explain
+  object: DFIR, EDR # Value previously under subject
+  name: Microsoft Defender for Endpoint curated list of resources for DFIR
+  url: https://github.com/cyb3rmik3/MDE-DFIR-Resources
+  description: various topics on MS MDE
+  function: detect, respond
+- subject: article # Value previously under object
+  predicate: explain
+  object: DFIR, linux forensic, linux logs # Value previously under subject
+  name: Hal Pomeranz’s Linux DFIR
+  url: https://archive.org/details/HalLinuxForensics
+  description: complete tutorial on linux DFIR
+  function: detect, respond
+- subject: list, tool # Value previously under object
+  predicate: aggregate
+  object: news # Value previously under subject
+  name: talkback
+  url: https://talkback.sh/resources/
+  description: infosec news aggregator
+  function: '' # Empty function
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: The Hive
+  url: https://github.com/TheHive-Project/TheHive
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: Tracecat # Corrected Name
+  url: https://github.com/TracecatHQ/tracecat
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: admyral # Cleaned Name
+  url: https://github.com/Admyral-Security/admyral?tab=readme-ov-file
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: SOARCA
+  url: https://cossas-project.org/portfolio/SOARCA/
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: Catalyst
+  url: https://github.com/SecurityBrewery/catalyst
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: jimi
+  url: https://github.com/z1pti3/jimi
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: deep alert
+  url: https://github.com/cookpad/deepalert
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: IRIS-SOAR
+  url: https://github.com/swiftbird07/IRIS-SOAR
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: scan
+  object: cloudtrail, common log # Value previously under subject
+  name: Cloud Console Cartographer
+  url: https://github.com/Permiso-io-tools/CloudConsoleCartographer
+  description: Console Cartographer is a framework for condensing groupings of cloud events (e.g. CloudTrail logs) and mapping them to the original user input actions in the management console UI for simplified analysis and explainability
+  function: detect
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate
+  object: alert, case # Value previously under subject
+  name: shuffle
+  url: https://github.com/Shuffle/Shuffle
+  description: open source SOAR
+  function: respond
+- subject: tool # Value previously under object
+  predicate: automate/ orchestrate, scan
+  object: cloud infrastructure # Value previously under subject
+  name: prowler
+  url: https://github.com/prowler-cloud/prowler
+  description: CSPM; cloud security
+  function: identify, protect
+- subject: tool # Value previously under object
+  predicate: aggregate, explain
+  object: cloud infrastructure # Value previously under subject
+  name: permission.cloud
+  url: https://aws.permissions.cloud/
+  description: The aws.permissions.cloud website uses a variety of information gathered within the iam-dataset and exposes that information in a clean, easy-to-read format. It provides an alternate, community-driven source of truth for AWS identity.
+  function: '' # Empty function
+- subject: framework # Value previously under object
+  predicate: aggregate, explain
+  object: log files # Value previously under subject
+  name: OCSF
+  url: https://schema.ocsf.io/
+  description: Open cyber security Schema Framework
+  function: govern, identify
+- subject: framework # Value previously under object
+  predicate: explain, standard
+  object: cloud infrastructure # Value previously under subject
+  name: cloudconformity
+  url: https://www.trendmicro.com/cloudoneconformity/
+  description: cloud security policy baseline
+  function: govern, protect
+- subject: cheat sheet, list # Value previously under object
+  predicate: aggregate, explain
+  object: IOC, cloud TTP # Value previously under subject
+  name: cloud threat landscape wiz.io
+  url: https://threats.wiz.io/
+  description: A comprehensive threat intelligence database of cloud security incidents, actors, tools and techniques. Powered by Wiz Research.
+  function: detect, protect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: Pypi, npm, supply chain # Value previously under subject
+  name: GuardDog
+  url: https://github.com/dataDog/guarddog
+  description: GuardDog is a CLI tool that allows to identify malicious PyPI and npm packages or Go modules. It runs a set of heuristics on the package source code (through Semgrep rules) and on the package metadata.
+  function: detect
+- subject: tool # Value previously under object
+  predicate: scan
+  object: azure # Value previously under subject
+  name: BlackCat
+  url: https://github.com/azurekid/blackcat
+  description: Azure pentesting PowerShell module
+  function: identify
