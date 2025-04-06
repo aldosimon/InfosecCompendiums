@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filterable Infosec Concepts Table (from YAML)</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        /* Custom styles */
+        body {
+            @apply font-['Inter',_sans-serif] bg-gray-100 p-4 sm:p-8;
+        }
+        table {
+            @apply min-w-full bg-white rounded-lg shadow overflow-hidden;
+        }
+        th {
+            @apply bg-blue-600 text-white px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider sticky top-0 z-10 whitespace-nowrap; /* Sticky header, prevent wrapping */
+        }
+        td {
+            @apply px-4 py-3 border-b border-gray-200 text-sm text-gray-700;
+        }
+        /* Make URL column slightly narrower if needed, and allow break */
+        td:nth-child(5) { /* 5th column is URL */
+             @apply max-w-xs break-words; /* Allow long URLs to wrap */
+        }
+        td a {
+            @apply text-blue-600 hover:text-blue-800 hover:underline;
+        }
+        tbody tr:nth-child(even) {
+            @apply bg-gray-50;
+        }
+        tbody tr:hover {
+            @apply bg-blue-50;
+        }
+        input[type="text"] {
+            @apply px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out w-full; /* Make inputs take full width in flex container */
+        }
+        .filter-container {
+            @apply bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4; /* Use grid for better alignment */
+        }
+        h1 {
+            @apply text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6;
+        }
+        caption {
+             @apply text-center text-sm text-gray-500 mt-4 italic;
+        }
+        /* Style for loading/error message */
+        #tableStatus {
+            @apply text-center text-gray-500 p-4;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <h1>Information Security Concepts</h1>
+
+    <div class="filter-container">
+        <input type="text" id="filterSubject" onkeyup="filterTable()" placeholder="Filter by Subject..." >
+        <input type="text" id="filterPredicate" onkeyup="filterTable()" placeholder="Filter by Predicate..." >
+        <input type="text" id="filterObject" onkeyup="filterTable()" placeholder="Filter by Object..." >
+        <input type="text" id="filterName" onkeyup="filterTable()" placeholder="Filter by Name..." >
+        <input type="text" id="filterUrl" onkeyup="filterTable()" placeholder="Filter by URL..." >
+        <input type="text" id="filterType" onkeyup="filterTable()" placeholder="Filter by Type..." >
+    </div>
+
+    <div class="overflow-x-auto rounded-lg shadow">
+        <table id="infosecTable" class="min-w-full">
+            <thead class="rounded-t-lg">
+                <tr>
+                    <th class="rounded-tl-lg">Subject</th>
+                    <th>Predicate</th>
+                    <th>Object</th>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th class="rounded-tr-lg">Type</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="6" id="tableStatus">Loading data...</td>
+                 </tr>
+            </tbody>
+             <tfoot>
+                <tr>
+                    <td colspan="6">
+                        <caption class="w-full block">Table of common Information Security concepts. Use filters above to search.</caption>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <script>
+        /**
+         * Fetches data from data.yaml, parses it, and populates the table with 6 columns.
+         */
+        async function loadTableData() {
+            const tableBody = document.getElementById('tableBody');
+            const dataUrl = 'data.yaml'; // Assumes data.yaml is in the same directory
+
+            try {
+                const response = await fetch(dataUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status} - Could not fetch ${dataUrl}`);
+                }
+                const yamlText = await response.text();
+                const data = jsyaml.load(yamlText); // Use js-yaml library
+
+                // Clear loading message or initial content
+                tableBody.innerHTML = '';
+
+                // Check if data is an array and not empty
+                if (!Array.isArray(data) || data.length === 0) {
+                     // Update colspan to 6
+                     tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 p-4">No data found in YAML file.</td></tr>';
+                     return;
+                }
+
+                // Populate table rows (6 cells)
+                data.forEach(item => {
+                    const row = tableBody.insertRow();
+                    const cellSubject = row.insertCell();
+                    const cellPredicate = row.insertCell();
+                    const cellObject = row.insertCell();
+                    const cellName = row.insertCell();
+                    const cellUrl = row.insertCell();
+                    const cellType = row.insertCell();
+
+                    cellSubject.textContent = item.subject || '';
+                    cellPredicate.textContent = item.predicate || '';
+                    cellObject.textContent = item.object || '';
+                    cellName.textContent = item.name || '';
+                    cellType.textContent = item.type || '';
+
+                    // Create a clickable link for the URL if it exists
+                    if (item.url) {
+                        const link = document.createElement('a');
+                        link.href = item.url;
+                        link.textContent = item.url; // Display the URL as link text
+                        link.target = "_blank"; // Open in new tab
+                        link.rel = "noopener noreferrer"; // Security measure
+                        cellUrl.appendChild(link);
+                    } else {
+                        cellUrl.textContent = ''; // Empty if no URL
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error loading or parsing YAML:', error);
+                // Display error message in the table body (update colspan to 6)
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 p-4">Error loading data: ${error.message}. Make sure 'data.yaml' exists and the page is served via HTTP/S.</td></tr>`;
+            }
+        }
+
+        /**
+         * Filters the table rows based on the text entered in the 6 filter input fields.
+         * It performs a case-insensitive search within each column.
+         * A row is displayed only if it matches the filter text in ALL columns where a filter is active.
+         */
+        function filterTable() {
+            // Get filter values from all 6 input fields and convert to lowercase
+            const filterSubject = document.getElementById('filterSubject').value.toLowerCase();
+            const filterPredicate = document.getElementById('filterPredicate').value.toLowerCase();
+            const filterObject = document.getElementById('filterObject').value.toLowerCase();
+            const filterName = document.getElementById('filterName').value.toLowerCase();
+            const filterUrl = document.getElementById('filterUrl').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value.toLowerCase();
+
+            // Get the table body and its rows
+            const tableBody = document.getElementById('tableBody');
+            const rows = tableBody.getElementsByTagName('tr');
+
+            // Loop through all table body rows
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                // Get the cells for all 6 columns
+                const cells = row.getElementsByTagName("td");
+
+                // Make sure it's a data row (has 6 cells) and not a status/error message row
+                if (cells.length === 6) {
+                    const tdSubject = cells[0];
+                    const tdPredicate = cells[1];
+                    const tdObject = cells[2];
+                    const tdName = cells[3];
+                    const tdUrl = cells[4]; // Contains the <a> tag if URL exists
+                    const tdType = cells[5];
+
+                    // Get the text content of each cell and convert to lowercase
+                    // For URL cell, textContent works even with the nested <a> tag
+                    const subjectText = (tdSubject.textContent || tdSubject.innerText).toLowerCase();
+                    const predicateText = (tdPredicate.textContent || tdPredicate.innerText).toLowerCase();
+                    const objectText = (tdObject.textContent || tdObject.innerText).toLowerCase();
+                    const nameText = (tdName.textContent || tdName.innerText).toLowerCase();
+                    const urlText = (tdUrl.textContent || tdUrl.innerText).toLowerCase();
+                    const typeText = (tdType.textContent || tdType.innerText).toLowerCase();
+
+
+                    // Check if the text in each cell includes the corresponding filter text
+                    const subjectMatch = subjectText.includes(filterSubject);
+                    const predicateMatch = predicateText.includes(filterPredicate);
+                    const objectMatch = objectText.includes(filterObject);
+                    const nameMatch = nameText.includes(filterName);
+                    const urlMatch = urlText.includes(filterUrl);
+                    const typeMatch = typeText.includes(filterType);
+
+
+                    // Show the row if all 6 filter criteria are met, otherwise hide it
+                    if (subjectMatch && predicateMatch && objectMatch && nameMatch && urlMatch && typeMatch) {
+                        row.style.display = ""; // Show row
+                    } else {
+                        row.style.display = "none"; // Hide row
+                    }
+                } else if (cells.length === 1) {
+                    // Keep status/error rows always visible only if ALL filters are cleared
+                    if (!filterSubject && !filterPredicate && !filterObject && !filterName && !filterUrl && !filterType) {
+                         row.style.display = "";
+                    } else {
+                         row.style.display = "none"; // Hide status row if any filter is active
+                    }
+                }
+            }
+        }
+
+        // Add an event listener to load the table data when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', loadTableData);
+    </script>
+
+</body>
+</html>

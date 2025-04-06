@@ -1,0 +1,132 @@
+# data.yaml
+# List of information security concepts with added fields.
+# Each item should have 'subject', 'predicate', 'object', 'name', 'url', and 'type'.
+
+- subject: Firewall
+  predicate: blocks
+  object: unauthorized network traffic
+  name: Network Firewall
+  url: https://en.wikipedia.org/wiki/Firewall_(computing)
+  type: Network Security Control
+
+- subject: Encryption
+  predicate: protects
+  object: data confidentiality
+  name: Data Encryption Standard (DES) Example
+  url: https://en.wikipedia.org/wiki/Data_Encryption_Standard
+  type: Cryptographic Control
+
+- subject: Vulnerability Scanner
+  predicate: identifies
+  object: system weaknesses
+  name: Nessus Scanner
+  url: https://www.tenable.com/products/nessus
+  type: Security Assessment Tool
+
+- subject: Phishing Attack
+  predicate: targets
+  object: user credentials
+  name: Spear Phishing
+  url: https://en.wikipedia.org/wiki/Phishing#Spear_phishing
+  type: Social Engineering Attack
+
+- subject: Intrusion Detection System (IDS)
+  predicate: monitors
+  object: network or system activities
+  name: Snort IDS
+  url: https://www.snort.org/
+  type: Monitoring System
+
+- subject: Intrusion Prevention System (IPS)
+  predicate: blocks
+  object: malicious activities
+  name: Suricata IPS
+  url: https://suricata.io/
+  type: Security Appliance
+
+- subject: Authentication
+  predicate: verifies
+  object: user identity
+  name: Password Authentication
+  url: https://en.wikipedia.org/wiki/Password
+  type: Access Control Mechanism
+
+- subject: Authorization
+  predicate: grants
+  object: access rights
+  name: Role-Based Access Control (RBAC)
+  url: https://en.wikipedia.org/wiki/Role-based_access_control
+  type: Access Control Model
+
+- subject: Patch Management
+  predicate: mitigates
+  object: known vulnerabilities
+  name: Windows Update
+  url: https://support.microsoft.com/en-us/windows/windows-update-faq-8a903416-6f45-0718-f5c7-375e92dddeb2
+  type: Security Process
+
+- subject: Principle of Least Privilege
+  predicate: restricts
+  object: user access permissions
+  name: Least Privilege Principle
+  url: https://en.wikipedia.org/wiki/Principle_of_least_privilege
+  type: Security Principle
+
+- subject: Backup Strategy
+  predicate: ensures
+  object: data recovery
+  name: 3-2-1 Backup Rule
+  url: https://www.backblaze.com/blog/the-3-2-1-backup-strategy/
+  type: Data Management Practice
+
+- subject: Security Information and Event Management (SIEM)
+  predicate: correlates
+  object: log data
+  name: Splunk SIEM
+  url: https://www.splunk.com/en_us/products/siem.html
+  type: Security Monitoring Tool
+
+- subject: Antivirus Software
+  predicate: detects
+  object: malware
+  name: Malwarebytes
+  url: https://www.malwarebytes.com/
+  type: Endpoint Security Software
+
+- subject: Risk Assessment
+  predicate: evaluates
+  object: potential threats
+  name: NIST Risk Management Framework
+  url: https://csrc.nist.gov/projects/risk-management
+  type: Security Management Process
+
+- subject: Penetration Testing
+  predicate: simulates
+  object: cyber attacks
+  name: OWASP ZAP
+  url: https://owasp.org/www-project-zap/
+  type: Security Testing Tool
+
+- subject: Access Control List (ACL)
+  predicate: defines
+  object: traffic rules
+  name: Cisco IOS ACL
+  url: https://www.cisco.com/c/en/us/support/docs/security/ios-firewall/23602-confaccesslists.html
+  type: Network Configuration
+
+- subject: Multi-Factor Authentication (MFA)
+  predicate: enhances
+  object: login security
+  name: Google Authenticator
+  url: https://en.wikipedia.org/wiki/Google_Authenticator
+  type: Authentication Method
+
+- subject: Data Loss Prevention (DLP)
+  predicate: prevents
+  object: sensitive data exfiltration
+  name: Symantec DLP
+  url: https://www.broadcom.com/products/cyber-security/information-protection/data-loss-prevention
+  type: Security Solution
+
+# Add more items here following the same format
+
