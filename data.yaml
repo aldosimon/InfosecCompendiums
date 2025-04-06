@@ -1,4 +1,4 @@
-This file contains the data loaded by the website. It follows the required schema, with the 'subject' and 'object' fields swapped as requested.# data.yaml
+# This file contains the data loaded by the website. It follows the required schema, with the 'subject' and 'object' fields swapped as requested.# data.yaml
 # List of items to display in the table.
 # Schema: subject, predicate, object, name, url, description, function
 # NOTE: 'subject' now contains the original 'Type', and 'object' contains the original 'Subject'.
