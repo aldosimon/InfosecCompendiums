@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Infosec Compendiums</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style type="text/tailwindcss">
+        @tailwind base;
+        @tailwind components;
+        @tailwind utilities;
+
+        /* Custom styles */
+        body {
+            @apply font-['Inter',_sans-serif] bg-gray-100 p-4 sm:p-8;
+        }
+        table {
+            @apply min-w-full bg-white rounded-lg shadow overflow-hidden;
+        }
+        th {
+            @apply bg-blue-600 text-white px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider sticky top-0 z-10 whitespace-nowrap; /* Sticky header */
+        }
+        td {
+            @apply px-4 py-3 border-b border-gray-200 text-sm text-gray-700;
+        }
+        td:nth-child(5) { /* URL column */
+             @apply max-w-xs break-words;
+        }
+        td a {
+            @apply text-blue-600 hover:text-blue-800 hover:underline;
+        }
+        tbody tr:nth-child(even) {
+            @apply bg-gray-50;
+        }
+        tbody tr:hover {
+            @apply bg-blue-50;
+        }
+        input[type="text"] {
+            @apply px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out w-full;
+        }
+        .filter-container {
+            @apply bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+        }
+        h1 {
+            @apply text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6;
+        }
+        caption {
+             @apply text-center text-sm text-gray-500 mt-4 italic;
+        }
+        #tableStatus {
+            @apply text-center text-gray-500 p-4;
+        }
+        /* Pagination Styles */
+        .pagination-container {
+            @apply bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-lg shadow mt-[-1px]; /* Negative margin to align with table shadow */
+        }
+        .pagination-info {
+            @apply text-sm text-gray-700 hidden sm:block; /* Hide on small screens */
+        }
+        .pagination-buttons button {
+            @apply relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <h1>Information Security Concepts</h1>
+
+    <div class="filter-container">
+        <input type="text" id="filterSubject" onkeyup="applyFilters()" placeholder="Filter by Subject..." >
+        <input type="text" id="filterPredicate" onkeyup="applyFilters()" placeholder="Filter by Predicate..." >
+        <input type="text" id="filterObject" onkeyup="applyFilters()" placeholder="Filter by Object..." >
+        <input type="text" id="filterName" onkeyup="applyFilters()" placeholder="Filter by Name..." >
+        <input type="text" id="filterUrl" onkeyup="applyFilters()" placeholder="Filter by URL..." >
+        <input type="text" id="filterType" onkeyup="applyFilters()" placeholder="Filter by Type..." >
+    </div>
+
+    <div class="overflow-x-auto rounded-t-lg shadow">
+        <table id="infosecTable" class="min-w-full">
+            <thead class="rounded-t-lg">
+                <tr>
+                    <th class="rounded-tl-lg">Subject</th>
+                    <th>Predicate</th>
+                    <th>Object</th>
+                    <th>Name</th>
+                    <th>URL</th>
+                    <th class="rounded-tr-lg">Type</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                 <tr>
+                    <td colspan="6" id="tableStatus">Loading data...</td>
+                 </tr>
+            </tbody>
+             </table>
+    </div>
+
+    <div id="paginationContainer" class="pagination-container">
+        </div>
+     <div class="text-center text-sm text-gray-500 mt-4 italic">
+        Use filters above to search.
+    </div>
+
+
+    <script>
+        // --- Global State ---
+        let allData = []; // Holds all data loaded from YAML
+        let filteredData = []; // Holds data matching current filters
+        let currentPage = 1;
+        const entriesPerPage = 20;
+
+        // --- DOM Elements ---
+        const tableBody = document.getElementById('tableBody');
+        const paginationContainer = document.getElementById('paginationContainer');
+
+        /**
+         * Fetches data from data.yaml, parses it, and initializes the table view.
+         */
+        async function loadTableData() {
+            const dataUrl = 'data.yaml'; // Assumes data.yaml is in the same directory
+
+            try {
+                const response = await fetch(dataUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status} - Could not fetch ${dataUrl}`);
+                }
+                const yamlText = await response.text();
+                const parsedData = jsyaml.load(yamlText); // Use js-yaml library
+
+                if (!Array.isArray(parsedData)) {
+                     throw new Error("YAML data is not an array.");
+                }
+
+                allData = parsedData;
+                filteredData = [...allData]; // Initially, filtered data is all data
+                currentPage = 1;
+
+                displayTablePage(); // Display the first page
+                setupPagination(); // Setup pagination controls
+
+            } catch (error) {
+                console.error('Error loading or parsing YAML:', error);
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 p-4">Error loading data: ${error.message}. Make sure 'data.yaml' exists and the page is served via HTTP/S.</td></tr>`;
+                paginationContainer.innerHTML = ''; // Clear pagination on error
+            }
+        }
+
+        /**
+         * Displays the correct page of data in the table body.
+         */
+        function displayTablePage() {
+            tableBody.innerHTML = ''; // Clear previous entries
+
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 p-4">No matching entries found.</td></tr>`;
+                return; // Exit if no data to display
+            }
+
+            // Calculate start and end indices for the current page
+            const startIndex = (currentPage - 1) * entriesPerPage;
+            const endIndex = startIndex + entriesPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            // Populate table rows for the current page
+            pageData.forEach(item => {
+                const row = tableBody.insertRow();
+                const cellSubject = row.insertCell();
+                const cellPredicate = row.insertCell();
+                const cellObject = row.insertCell();
+                const cellName = row.insertCell();
+                const cellUrl = row.insertCell();
+                const cellType = row.insertCell();
+
+                cellSubject.textContent = item.subject || '';
+                cellPredicate.textContent = item.predicate || '';
+                cellObject.textContent = item.object || '';
+                cellName.textContent = item.name || '';
+                cellType.textContent = item.type || '';
+
+                // Create a clickable link for the URL
+                if (item.url) {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.textContent = item.url;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    cellUrl.appendChild(link);
+                } else {
+                    cellUrl.textContent = '';
+                }
+            });
+        }
+
+        /**
+         * Sets up or updates the pagination controls (buttons and info).
+         */
+        function setupPagination() {
+            paginationContainer.innerHTML = ''; // Clear existing controls
+            const totalEntries = filteredData.length;
+            const totalPages = Math.ceil(totalEntries / entriesPerPage);
+
+            if (totalPages <= 1) {
+                // No pagination needed if 1 page or less
+                 paginationContainer.innerHTML = `
+                    <div class="flex-1 flex justify-between sm:hidden"></div> <div class="pagination-info">
+                        <p>Showing ${totalEntries} result${totalEntries !== 1 ? 's' : ''}</p>
+                    </div>
+                    <div class="pagination-buttons flex-1 flex justify-between sm:justify-end"></div> `;
+                return;
+            }
+
+            const startIndex = (currentPage - 1) * entriesPerPage + 1;
+            const endIndex = Math.min(startIndex + entriesPerPage - 1, totalEntries);
+
+            // --- Create Pagination Info (Showing X to Y of Z results) ---
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'pagination-info';
+            infoDiv.innerHTML = `<p>Showing <span class="font-medium">${startIndex}</span> to <span class="font-medium">${endIndex}</span> of <span class="font-medium">${totalEntries}</span> results</p>`;
+
+            // --- Create Pagination Buttons ---
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.className = 'pagination-buttons flex-1 flex justify-between sm:justify-end space-x-2'; // Added space-x-2
+
+            // Previous Button
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTablePage();
+                    setupPagination(); // Update button states and info
+                }
+            };
+
+            // Next Button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTablePage();
+                    setupPagination(); // Update button states and info
+                }
+            };
+
+             // --- Mobile Info (alternative to hidden desktop info) ---
+            const mobileInfoDiv = document.createElement('div');
+            mobileInfoDiv.className = 'flex-1 flex justify-between sm:hidden'; // Show only on small screens
+            mobileInfoDiv.innerHTML = `<span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700">Page ${currentPage} of ${totalPages}</span>`;
+
+
+            // Append elements
+            buttonsDiv.appendChild(prevButton);
+            buttonsDiv.appendChild(nextButton);
+
+            paginationContainer.appendChild(mobileInfoDiv); // Mobile info/spacer
+            paginationContainer.appendChild(infoDiv);      // Desktop info
+            paginationContainer.appendChild(buttonsDiv);   // Buttons
+
+        }
+
+        /**
+         * Applies filters based on input fields, updates filteredData, and refreshes the view.
+         */
+        function applyFilters() {
+            // Get filter values
+            const filterSubject = document.getElementById('filterSubject').value.toLowerCase();
+            const filterPredicate = document.getElementById('filterPredicate').value.toLowerCase();
+            const filterObject = document.getElementById('filterObject').value.toLowerCase();
+            const filterName = document.getElementById('filterName').value.toLowerCase();
+            const filterUrl = document.getElementById('filterUrl').value.toLowerCase();
+            const filterType = document.getElementById('filterType').value.toLowerCase();
+
+            // Filter the original data
+            filteredData = allData.filter(item => {
+                const subjectText = (item.subject || '').toLowerCase();
+                const predicateText = (item.predicate || '').toLowerCase();
+                const objectText = (item.object || '').toLowerCase();
+                const nameText = (item.name || '').toLowerCase();
+                const urlText = (item.url || '').toLowerCase(); // Filter based on the URL string itself
+                const typeText = (item.type || '').toLowerCase();
+
+                return subjectText.includes(filterSubject) &&
+                       predicateText.includes(filterPredicate) &&
+                       objectText.includes(filterObject) &&
+                       nameText.includes(filterName) &&
+                       urlText.includes(filterUrl) &&
+                       typeText.includes(filterType);
+            });
+
+            // Reset to first page and update display
+            currentPage = 1;
+            displayTablePage();
+            setupPagination();
+        }
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', loadTableData);
+
+    </script>
+
+</body>
+</html>
