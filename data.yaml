@@ -43,25 +43,4 @@ This is an example of how your data.yaml file should be structured. You need to 
   description: A security measure requiring two or more verification methods to grant access.
   function: protect
 
-# --- Add at least 15 more entries here to properly test pagination ---
-# Example placeholder entries (replace with your real data)
-- { subject: placeholder, predicate: action, object: target, name: Item 6, url: 'https://example.com/item6', description: Desc 6, function: identify }
-- { subject: placeholder, predicate: action, object: target, name: Item 7, url: 'https://example.com/item7', description: Desc 7, function: detect }
-- { subject: placeholder, predicate: action, object: target, name: Item 8, url: 'https://example.com/item8', description: Desc 8, function: protect }
-- { subject: placeholder, predicate: action, object: target, name: Item 9, url: 'https://example.com/item9', description: Desc 9, function: respond }
-- { subject: placeholder, predicate: action, object: target, name: Item 10, url: 'https://example.com/item10', description: Desc 10, function: recover }
-- { subject: placeholder, predicate: action, object: target, name: Item 11, url: 'https://example.com/item11', description: Desc 11, function: identify }
-- { subject: placeholder, predicate: action, object: target, name: Item 12, url: 'https://example.com/item12', description: Desc 12, function: detect }
-- { subject: placeholder, predicate: action, object: target, name: Item 13, url: 'https://example.com/item13', description: Desc 13, function: protect }
-- { subject: placeholder, predicate: action, object: target, name: Item 14, url: 'https://example.com/item14', description: Desc 14, function: respond }
-- { subject: placeholder, predicate: action, object: target, name: Item 15, url: 'https://example.com/item15', description: Desc 15, function: recover }
-- { subject: placeholder, predicate: action, object: target, name: Item 16, url: 'https://example.com/item16', description: Desc 16, function: identify }
-- { subject: placeholder, predicate: action, object: target, name: Item 17, url: 'https://example.com/item17', description: Desc 17, function: detect }
-- { subject: placeholder, predicate: action, object: target, name: Item 18, url: 'https://example.com/item18', description: Desc 18, function: protect }
-- { subject: placeholder, predicate: action, object: target, name: Item 19, url: 'https://example.com/item19', description: Desc 19, function: respond }
-- { subject: placeholder, predicate: action, object: target, name: Item 20, url: 'https://example.com/item20', description: Desc 20, function: recover }
-- { subject: placeholder, predicate: action, object: target, name: Item 21, url: 'https://example.com/item21', description: Desc 21, function: identify }
-- { subject: placeholder, predicate: action, object: target, name: Item 22, url: 'https://example.com/item22', description: Desc 22, function: detect }
-- { subject: placeholder, predicate: action, object: target, name: Item 23, url: 'https://example.com/item23', description: Desc 23, function: protect }
-# --- End of placeholder entries ---
 
