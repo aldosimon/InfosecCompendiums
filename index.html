@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Filterable Infosec Concepts Table (from YAML)</title>
+    <title>Filterable & Paginated Infosec Concepts Table (from YAML)</title>
     <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <style type="text/tailwindcss">
@@ -19,14 +19,13 @@
             @apply min-w-full bg-white rounded-lg shadow overflow-hidden;
         }
         th {
-            @apply bg-blue-600 text-white px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider sticky top-0 z-10 whitespace-nowrap; /* Sticky header, prevent wrapping */
+            @apply bg-blue-600 text-white px-4 py-3 text-left text-sm font-semibold uppercase tracking-wider sticky top-0 z-10 whitespace-nowrap; /* Sticky header */
         }
         td {
             @apply px-4 py-3 border-b border-gray-200 text-sm text-gray-700;
         }
-        /* Make URL column slightly narrower if needed, and allow break */
-        td:nth-child(5) { /* 5th column is URL */
-             @apply max-w-xs break-words; /* Allow long URLs to wrap */
+        td:nth-child(5) { /* URL column */
+             @apply max-w-xs break-words;
         }
         td a {
             @apply text-blue-600 hover:text-blue-800 hover:underline;
@@ -38,10 +37,10 @@
             @apply bg-blue-50;
         }
         input[type="text"] {
-            @apply px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out w-full; /* Make inputs take full width in flex container */
+            @apply px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-150 ease-in-out w-full;
         }
         .filter-container {
-            @apply bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4; /* Use grid for better alignment */
+            @apply bg-white p-4 rounded-lg shadow mb-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
         }
         h1 {
             @apply text-2xl sm:text-3xl font-bold text-gray-800 text-center mb-6;
@@ -49,9 +48,18 @@
         caption {
              @apply text-center text-sm text-gray-500 mt-4 italic;
         }
-        /* Style for loading/error message */
         #tableStatus {
             @apply text-center text-gray-500 p-4;
+        }
+        /* Pagination Styles */
+        .pagination-container {
+            @apply bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 rounded-b-lg shadow mt-[-1px]; /* Negative margin to align with table shadow */
+        }
+        .pagination-info {
+            @apply text-sm text-gray-700 hidden sm:block; /* Hide on small screens */
+        }
+        .pagination-buttons button {
+            @apply relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed;
         }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -63,15 +71,15 @@
     <h1>Information Security Concepts</h1>
 
     <div class="filter-container">
-        <input type="text" id="filterSubject" onkeyup="filterTable()" placeholder="Filter by Subject..." >
-        <input type="text" id="filterPredicate" onkeyup="filterTable()" placeholder="Filter by Predicate..." >
-        <input type="text" id="filterObject" onkeyup="filterTable()" placeholder="Filter by Object..." >
-        <input type="text" id="filterName" onkeyup="filterTable()" placeholder="Filter by Name..." >
-        <input type="text" id="filterUrl" onkeyup="filterTable()" placeholder="Filter by URL..." >
-        <input type="text" id="filterType" onkeyup="filterTable()" placeholder="Filter by Type..." >
+        <input type="text" id="filterSubject" onkeyup="applyFilters()" placeholder="Filter by Subject..." >
+        <input type="text" id="filterPredicate" onkeyup="applyFilters()" placeholder="Filter by Predicate..." >
+        <input type="text" id="filterObject" onkeyup="applyFilters()" placeholder="Filter by Object..." >
+        <input type="text" id="filterName" onkeyup="applyFilters()" placeholder="Filter by Name..." >
+        <input type="text" id="filterUrl" onkeyup="applyFilters()" placeholder="Filter by URL..." >
+        <input type="text" id="filterType" onkeyup="applyFilters()" placeholder="Filter by Type..." >
     </div>
 
-    <div class="overflow-x-auto rounded-lg shadow">
+    <div class="overflow-x-auto rounded-t-lg shadow">
         <table id="infosecTable" class="min-w-full">
             <thead class="rounded-t-lg">
                 <tr>
@@ -84,26 +92,35 @@
                 </tr>
             </thead>
             <tbody id="tableBody">
-                <tr>
+                 <tr>
                     <td colspan="6" id="tableStatus">Loading data...</td>
                  </tr>
             </tbody>
-             <tfoot>
-                <tr>
-                    <td colspan="6">
-                        <caption class="w-full block">Table of common Information Security concepts. Use filters above to search.</caption>
-                    </td>
-                </tr>
-            </tfoot>
-        </table>
+             </table>
     </div>
 
+    <div id="paginationContainer" class="pagination-container">
+        </div>
+     <div class="text-center text-sm text-gray-500 mt-4 italic">
+        Table of common Information Security concepts. Use filters above to search.
+    </div>
+
+
     <script>
+        // --- Global State ---
+        let allData = []; // Holds all data loaded from YAML
+        let filteredData = []; // Holds data matching current filters
+        let currentPage = 1;
+        const entriesPerPage = 20;
+
+        // --- DOM Elements ---
+        const tableBody = document.getElementById('tableBody');
+        const paginationContainer = document.getElementById('paginationContainer');
+
         /**
-         * Fetches data from data.yaml, parses it, and populates the table with 6 columns.
+         * Fetches data from data.yaml, parses it, and initializes the table view.
          */
         async function loadTableData() {
-            const tableBody = document.getElementById('tableBody');
             const dataUrl = 'data.yaml'; // Assumes data.yaml is in the same directory
 
             try {
@@ -112,61 +129,147 @@
                     throw new Error(`HTTP error! Status: ${response.status} - Could not fetch ${dataUrl}`);
                 }
                 const yamlText = await response.text();
-                const data = jsyaml.load(yamlText); // Use js-yaml library
+                const parsedData = jsyaml.load(yamlText); // Use js-yaml library
 
-                // Clear loading message or initial content
-                tableBody.innerHTML = '';
-
-                // Check if data is an array and not empty
-                if (!Array.isArray(data) || data.length === 0) {
-                     // Update colspan to 6
-                     tableBody.innerHTML = '<tr><td colspan="6" class="text-center text-gray-500 p-4">No data found in YAML file.</td></tr>';
-                     return;
+                if (!Array.isArray(parsedData)) {
+                     throw new Error("YAML data is not an array.");
                 }
 
-                // Populate table rows (6 cells)
-                data.forEach(item => {
-                    const row = tableBody.insertRow();
-                    const cellSubject = row.insertCell();
-                    const cellPredicate = row.insertCell();
-                    const cellObject = row.insertCell();
-                    const cellName = row.insertCell();
-                    const cellUrl = row.insertCell();
-                    const cellType = row.insertCell();
+                allData = parsedData;
+                filteredData = [...allData]; // Initially, filtered data is all data
+                currentPage = 1;
 
-                    cellSubject.textContent = item.subject || '';
-                    cellPredicate.textContent = item.predicate || '';
-                    cellObject.textContent = item.object || '';
-                    cellName.textContent = item.name || '';
-                    cellType.textContent = item.type || '';
-
-                    // Create a clickable link for the URL if it exists
-                    if (item.url) {
-                        const link = document.createElement('a');
-                        link.href = item.url;
-                        link.textContent = item.url; // Display the URL as link text
-                        link.target = "_blank"; // Open in new tab
-                        link.rel = "noopener noreferrer"; // Security measure
-                        cellUrl.appendChild(link);
-                    } else {
-                        cellUrl.textContent = ''; // Empty if no URL
-                    }
-                });
+                displayTablePage(); // Display the first page
+                setupPagination(); // Setup pagination controls
 
             } catch (error) {
                 console.error('Error loading or parsing YAML:', error);
-                // Display error message in the table body (update colspan to 6)
                 tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-red-500 p-4">Error loading data: ${error.message}. Make sure 'data.yaml' exists and the page is served via HTTP/S.</td></tr>`;
+                paginationContainer.innerHTML = ''; // Clear pagination on error
             }
         }
 
         /**
-         * Filters the table rows based on the text entered in the 6 filter input fields.
-         * It performs a case-insensitive search within each column.
-         * A row is displayed only if it matches the filter text in ALL columns where a filter is active.
+         * Displays the correct page of data in the table body.
          */
-        function filterTable() {
-            // Get filter values from all 6 input fields and convert to lowercase
+        function displayTablePage() {
+            tableBody.innerHTML = ''; // Clear previous entries
+
+            if (filteredData.length === 0) {
+                tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-gray-500 p-4">No matching entries found.</td></tr>`;
+                return; // Exit if no data to display
+            }
+
+            // Calculate start and end indices for the current page
+            const startIndex = (currentPage - 1) * entriesPerPage;
+            const endIndex = startIndex + entriesPerPage;
+            const pageData = filteredData.slice(startIndex, endIndex);
+
+            // Populate table rows for the current page
+            pageData.forEach(item => {
+                const row = tableBody.insertRow();
+                const cellSubject = row.insertCell();
+                const cellPredicate = row.insertCell();
+                const cellObject = row.insertCell();
+                const cellName = row.insertCell();
+                const cellUrl = row.insertCell();
+                const cellType = row.insertCell();
+
+                cellSubject.textContent = item.subject || '';
+                cellPredicate.textContent = item.predicate || '';
+                cellObject.textContent = item.object || '';
+                cellName.textContent = item.name || '';
+                cellType.textContent = item.type || '';
+
+                // Create a clickable link for the URL
+                if (item.url) {
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.textContent = item.url;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    cellUrl.appendChild(link);
+                } else {
+                    cellUrl.textContent = '';
+                }
+            });
+        }
+
+        /**
+         * Sets up or updates the pagination controls (buttons and info).
+         */
+        function setupPagination() {
+            paginationContainer.innerHTML = ''; // Clear existing controls
+            const totalEntries = filteredData.length;
+            const totalPages = Math.ceil(totalEntries / entriesPerPage);
+
+            if (totalPages <= 1) {
+                // No pagination needed if 1 page or less
+                 paginationContainer.innerHTML = `
+                    <div class="flex-1 flex justify-between sm:hidden"></div> <div class="pagination-info">
+                        <p>Showing ${totalEntries} result${totalEntries !== 1 ? 's' : ''}</p>
+                    </div>
+                    <div class="pagination-buttons flex-1 flex justify-between sm:justify-end"></div> `;
+                return;
+            }
+
+            const startIndex = (currentPage - 1) * entriesPerPage + 1;
+            const endIndex = Math.min(startIndex + entriesPerPage - 1, totalEntries);
+
+            // --- Create Pagination Info (Showing X to Y of Z results) ---
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'pagination-info';
+            infoDiv.innerHTML = `<p>Showing <span class="font-medium">${startIndex}</span> to <span class="font-medium">${endIndex}</span> of <span class="font-medium">${totalEntries}</span> results</p>`;
+
+            // --- Create Pagination Buttons ---
+            const buttonsDiv = document.createElement('div');
+            buttonsDiv.className = 'pagination-buttons flex-1 flex justify-between sm:justify-end space-x-2'; // Added space-x-2
+
+            // Previous Button
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Previous';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    displayTablePage();
+                    setupPagination(); // Update button states and info
+                }
+            };
+
+            // Next Button
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Next';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    displayTablePage();
+                    setupPagination(); // Update button states and info
+                }
+            };
+
+             // --- Mobile Info (alternative to hidden desktop info) ---
+            const mobileInfoDiv = document.createElement('div');
+            mobileInfoDiv.className = 'flex-1 flex justify-between sm:hidden'; // Show only on small screens
+            mobileInfoDiv.innerHTML = `<span class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700">Page ${currentPage} of ${totalPages}</span>`;
+
+
+            // Append elements
+            buttonsDiv.appendChild(prevButton);
+            buttonsDiv.appendChild(nextButton);
+
+            paginationContainer.appendChild(mobileInfoDiv); // Mobile info/spacer
+            paginationContainer.appendChild(infoDiv);      // Desktop info
+            paginationContainer.appendChild(buttonsDiv);   // Buttons
+
+        }
+
+        /**
+         * Applies filters based on input fields, updates filteredData, and refreshes the view.
+         */
+        function applyFilters() {
+            // Get filter values
             const filterSubject = document.getElementById('filterSubject').value.toLowerCase();
             const filterPredicate = document.getElementById('filterPredicate').value.toLowerCase();
             const filterObject = document.getElementById('filterObject').value.toLowerCase();
@@ -174,63 +277,32 @@
             const filterUrl = document.getElementById('filterUrl').value.toLowerCase();
             const filterType = document.getElementById('filterType').value.toLowerCase();
 
-            // Get the table body and its rows
-            const tableBody = document.getElementById('tableBody');
-            const rows = tableBody.getElementsByTagName('tr');
+            // Filter the original data
+            filteredData = allData.filter(item => {
+                const subjectText = (item.subject || '').toLowerCase();
+                const predicateText = (item.predicate || '').toLowerCase();
+                const objectText = (item.object || '').toLowerCase();
+                const nameText = (item.name || '').toLowerCase();
+                const urlText = (item.url || '').toLowerCase(); // Filter based on the URL string itself
+                const typeText = (item.type || '').toLowerCase();
 
-            // Loop through all table body rows
-            for (let i = 0; i < rows.length; i++) {
-                const row = rows[i];
-                // Get the cells for all 6 columns
-                const cells = row.getElementsByTagName("td");
+                return subjectText.includes(filterSubject) &&
+                       predicateText.includes(filterPredicate) &&
+                       objectText.includes(filterObject) &&
+                       nameText.includes(filterName) &&
+                       urlText.includes(filterUrl) &&
+                       typeText.includes(filterType);
+            });
 
-                // Make sure it's a data row (has 6 cells) and not a status/error message row
-                if (cells.length === 6) {
-                    const tdSubject = cells[0];
-                    const tdPredicate = cells[1];
-                    const tdObject = cells[2];
-                    const tdName = cells[3];
-                    const tdUrl = cells[4]; // Contains the <a> tag if URL exists
-                    const tdType = cells[5];
-
-                    // Get the text content of each cell and convert to lowercase
-                    // For URL cell, textContent works even with the nested <a> tag
-                    const subjectText = (tdSubject.textContent || tdSubject.innerText).toLowerCase();
-                    const predicateText = (tdPredicate.textContent || tdPredicate.innerText).toLowerCase();
-                    const objectText = (tdObject.textContent || tdObject.innerText).toLowerCase();
-                    const nameText = (tdName.textContent || tdName.innerText).toLowerCase();
-                    const urlText = (tdUrl.textContent || tdUrl.innerText).toLowerCase();
-                    const typeText = (tdType.textContent || tdType.innerText).toLowerCase();
-
-
-                    // Check if the text in each cell includes the corresponding filter text
-                    const subjectMatch = subjectText.includes(filterSubject);
-                    const predicateMatch = predicateText.includes(filterPredicate);
-                    const objectMatch = objectText.includes(filterObject);
-                    const nameMatch = nameText.includes(filterName);
-                    const urlMatch = urlText.includes(filterUrl);
-                    const typeMatch = typeText.includes(filterType);
-
-
-                    // Show the row if all 6 filter criteria are met, otherwise hide it
-                    if (subjectMatch && predicateMatch && objectMatch && nameMatch && urlMatch && typeMatch) {
-                        row.style.display = ""; // Show row
-                    } else {
-                        row.style.display = "none"; // Hide row
-                    }
-                } else if (cells.length === 1) {
-                    // Keep status/error rows always visible only if ALL filters are cleared
-                    if (!filterSubject && !filterPredicate && !filterObject && !filterName && !filterUrl && !filterType) {
-                         row.style.display = "";
-                    } else {
-                         row.style.display = "none"; // Hide status row if any filter is active
-                    }
-                }
-            }
+            // Reset to first page and update display
+            currentPage = 1;
+            displayTablePage();
+            setupPagination();
         }
 
-        // Add an event listener to load the table data when the DOM is fully loaded
+        // --- Initial Load ---
         document.addEventListener('DOMContentLoaded', loadTableData);
+
     </script>
 
 </body>
