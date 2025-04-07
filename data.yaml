@@ -256,7 +256,7 @@
   object: IOC, hash # Value previously under subject
   name: filescan
   url: https://www.filescan.io/scan
-  description: Uncover Hidden Threats: Insightful Analysis Powered by Your Data
+  description: Uncover Hidden Threats - Insightful Analysis Powered by Your Data
   function: detect
 
 - subject: tool # Value previously under object
