@@ -530,3 +530,19 @@
   url: https://github.com/azurekid/blackcat
   description: Azure pentesting PowerShell module
   function: identify
+
+- subject: framework # Value previously under object
+  predicate: explain
+  object: cloud # Value previously under subject
+  name: Universal Cloud Threat Model
+  url: https://securosis.com/wp-content/uploads/2024/04/UCTM_v_1.0.pdf
+  description: The UCTM was designed as a cloud-centric update to traditional threat modeling.
+  function: identify
+
+- subject: tool # Value previously under object
+  predicate: explain
+  object: aws # Value previously under subject
+  name: aws security changes
+  url: https://awssecuritychanges.com/
+  description: The tool identify change log from aws and using LLM to describe security impact.
+  function: identify
