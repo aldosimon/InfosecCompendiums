@@ -546,3 +546,11 @@
   url: https://awssecuritychanges.com/
   description: The tool identify change log from aws and using LLM to describe security impact.
   function: identify
+
+- subject: tool # Value previously under object
+  predicate: explain
+  object: cloud best practice # Value previously under subject
+  name: CloudGuardrails
+  url: https://www.cloudguardrails.com/
+  description: Quick Reference to Cloud Best Practices
+  function: protect
