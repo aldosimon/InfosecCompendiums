@@ -1,4 +1,4 @@
-# about
+# About
 The infosec compendiums project aims to inventories topics of information security (e.g. tools, scripts, cheat sheets, knowledge bases, among other things)
 
 The project started because from time to time I need access to a specific infosec project but can't remember its name to search.
@@ -7,22 +7,19 @@ So, the main goal of the project is to provide a one pager with an easy way to f
 
 For instance if you are trying to find something that list/ explain various cloudtrail api calls, you’ll use filter "tool", "explain", "cloudTrail" in the "subject”, “predicate”, and “object” column respectively.
 
-## todo
+## Todo
 
 create a schema so consistent wording especially throughout the SPO.
 
 
-### Schema draft as of April 2025
+### Schema draft as of May 2025
 
 #### Subject (What type of topic is it?)
 
 This column aims to categorize the fundamental nature of the infosec topic.
 
-***Software***: Applications, programs, and scripts designed for specific security purposes.
+***Tools***: Applications, programs, and scripts designed for specific security purposes.
 Example: Firewall, Antivirus, Vulnerability Scanner, Intrusion Detection System (IDS), Security Information and Event Management (SIEM)
-
-***Hardware***: Physical devices used for security functions.
-Example: Hardware Security Module (HSM), Smart Card, Security Token, Physical Security Barrier, Network Tap
 
 ***Methodology**: Techniques, approaches, and procedures used in security practices.
 Example: Penetration Testing, Threat Modeling, Risk Assessment, Incident Response, Social Engineering
@@ -60,7 +57,7 @@ Example: Enforce security policies, Enforce access controls
 ***Test***: To test.
 Examples: Penetration testing frameworks, red team tools.
 
-***Communicate***: To transmit or exchange security-related information.
+***Explain***: To explain, transmit or exchange security-related information.
 Example: Communicate threats, Communicate alerts
 
 ***Recover***: To restore to a former or normal condition after loss, damage, or a security incident.
