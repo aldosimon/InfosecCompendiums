@@ -554,3 +554,11 @@
   url: https://www.cloudguardrails.com/
   description: Quick Reference to Cloud Best Practices
   function: protect
+
+  - subject: tool # Value previously under object
+  predicate: aggregate
+  object: detection rule # Value previously under subject
+  name: detections.ai
+  url: https://www.detections.ai
+  description: AI and community based detection website
+  function: detect

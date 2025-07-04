@@ -12,7 +12,7 @@ For instance if you are trying to find something that list/ explain various clou
 create a schema so consistent wording especially throughout the SPO.
 
 
-### Schema draft as of May 2025
+### Schema draft as of July 2025
 
 #### Subject (What type of topic is it?)
 
@@ -60,8 +60,8 @@ Examples: Penetration testing frameworks, red team tools.
 ***Explain***: To explain, transmit or exchange security-related information.
 Example: Communicate threats, Communicate alerts
 
-***Recover***: To restore to a former or normal condition after loss, damage, or a security incident.
-Example: Recover data, Recover systems
+***Aggregate/ Summarize***: To collect and combine separate pieces of information into a comprehensive whole, or to provide a concise overview of key points.
+Example: Aggregate security logs, Summarize incident reports, Aggregate threat intelligence
 
 #### Object (To whom or what does that topic do something?)
 
